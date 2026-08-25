@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: chess-postgres
+    environment:
+      POSTGRES_DB: chess
+      POSTGRES_USER: chess
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-chess}
+    ports:
+      - "5555:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chess -d chess"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+    container_name: chess-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 7777
+      DB_URL: jdbc:postgresql://postgres:5432/chess
+      DB_USERNAME: chess
+      DB_PASSWORD: ${DB_PASSWORD:-chess}
+      JWT_SECRET: ${JWT_SECRET:-dev-only-secret-nao-use-em-producao-troque-por-uma-chave-de-256-bits}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5175}
+    ports:
+      - "7777:7777"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7777/actuator/health | grep -q UP"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
