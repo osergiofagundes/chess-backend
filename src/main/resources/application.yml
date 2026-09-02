@@ -1,6 +1,5 @@
 server:
-  # 8080 esta ocupada pelo container planix-app-1 nesta maquina.
-  port: ${SERVER_PORT:8088}
+  port: ${SERVER_PORT:7777}
 
 spring:
   application:
@@ -12,8 +11,6 @@ spring:
     password: ${DB_PASSWORD:chess}
 
   jpa:
-    # O schema pertence ao Flyway. `validate` falha o boot se as entidades
-    # divergirem das migrations -- que e exatamente o que queremos saber cedo.
     hibernate:
       ddl-auto: validate
     open-in-view: false
@@ -35,13 +32,10 @@ management:
 
 app:
   jwt:
-    # HS256 exige >= 256 bits. Em producao vem de JWT_SECRET; este default
-    # existe apenas para o ambiente local nao precisar de setup.
     secret: ${JWT_SECRET:dev-only-secret-nao-use-em-producao-troque-por-uma-chave-de-256-bits}
     access-token-ttl: PT15M
     refresh-token-ttl: P7D
   auth:
-    # Em producao (HTTPS) deve ser true.
     cookie-secure: ${COOKIE_SECURE:false}
   cors:
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5175}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:9999}

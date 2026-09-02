@@ -38,8 +38,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        // O handshake do WebSocket e liberado aqui porque a autenticacao
-                        // acontece no frame STOMP CONNECT, nao no HTTP upgrade.
                         .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint))

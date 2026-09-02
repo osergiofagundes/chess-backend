@@ -6,9 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
-        @NotBlank
-        @Pattern(regexp = "^[A-Za-z0-9_]{3,30}$",
-                 message = "deve ter de 3 a 30 caracteres, apenas letras, números e _")
+        @NotBlank @Pattern(regexp = "^[A-Za-z0-9_]{3,30}$", message = "deve ter de 3 a 30 caracteres, apenas letras, números e _")
         String username,
 
         @NotBlank @Email @Size(max = 255)
